@@ -223,6 +223,34 @@ export class NotificationService {
     const tenDigit = rawDigits.length >= 10 ? rawDigits.slice(-10) : rawDigits;
     const e164 = phoneNumber.startsWith('+') ? phoneNumber : `+91${tenDigit}`;
 
+    // 0. Gonums (Indian Quick SMS / No-DLT direct route)
+    if (process.env.GONUMS_API_KEY) {
+      try {
+        console.log(`\n📡 [Real Carrier Gateway] Dispatching via Gonums to ${tenDigit}...`);
+        const endpoint = process.env.GONUMS_API_URL || 'https://sms-api.mapthrust.io/dev/bulkV2';
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            Authorization: process.env.GONUMS_API_KEY,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            route: 'q',
+            message: message,
+            language: 'english',
+            flash: 0,
+            numbers: tenDigit,
+          }),
+        });
+        const data = await res.json();
+        console.log('📡 [Gonums Carrier Response]:', data);
+        return { provider: 'gonums', success: !!(data.return || data.status_code === 200 || res.ok), details: data };
+      } catch (err: any) {
+        console.error('❌ [Gonums Delivery Error]:', err.message);
+        return { provider: 'gonums', success: false, details: err.message };
+      }
+    }
+
     // 1. Fast2SMS (Indian carrier direct)
     if (process.env.FAST2SMS_API_KEY) {
       try {
