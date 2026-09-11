@@ -223,7 +223,7 @@ export class NotificationService {
     const tenDigit = rawDigits.length >= 10 ? rawDigits.slice(-10) : rawDigits;
     const e164 = phoneNumber.startsWith('+') ? phoneNumber : `+91${tenDigit}`;
 
-    // 1. Fast2SMS (Recommended for Indian mobile numbers like +91 7985674878)
+    // 1. Fast2SMS (Indian carrier direct)
     if (process.env.FAST2SMS_API_KEY) {
       try {
         console.log(`\n📡 [Real Carrier Gateway] Dispatching via Fast2SMS to ${tenDigit}...`);
@@ -250,7 +250,7 @@ export class NotificationService {
       }
     }
 
-    // 2. Twilio (Global carrier direct)
+    // 2. Twilio (Free trial account gives ~$15.50 free credits, works directly to verified +91 7985674878)
     if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
       try {
         console.log(`\n📡 [Real Carrier Gateway] Dispatching via Twilio to ${e164}...`);
@@ -279,7 +279,97 @@ export class NotificationService {
       }
     }
 
-    // 3. Custom SMS Gateway Webhook
+    // 3. Vonage / Nexmo (Free developer sandbox / €2 trial)
+    if (process.env.VONAGE_API_KEY && process.env.VONAGE_API_SECRET) {
+      try {
+        console.log(`\n📡 [Real Carrier Gateway] Dispatching via Vonage to ${e164}...`);
+        const res = await fetch('https://rest.nexmo.com/sms/json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            api_key: process.env.VONAGE_API_KEY,
+            api_secret: process.env.VONAGE_API_SECRET,
+            to: rawDigits.startsWith('91') ? rawDigits : `91${tenDigit}`,
+            from: process.env.VONAGE_FROM || 'HemaLink',
+            text: message,
+          }),
+        });
+        const data = await res.json();
+        console.log('📡 [Vonage Carrier Response]:', data);
+        const isSuccess = data.messages?.[0]?.status === '0';
+        return { provider: 'vonage', success: isSuccess, details: data };
+      } catch (err: any) {
+        console.error('❌ [Vonage Delivery Error]:', err.message);
+        return { provider: 'vonage', success: false, details: err.message };
+      }
+    }
+
+    // 4. Textbee (Free open-source Android SMS gateway - 300 free msgs/mo using your phone SIM)
+    if (process.env.TEXTBEE_API_KEY && process.env.TEXTBEE_DEVICE_ID) {
+      try {
+        console.log(`\n📡 [Real Carrier Gateway] Dispatching via Textbee (Android Gateway) to ${e164}...`);
+        const res = await fetch(
+          `https://api.textbee.dev/api/v1/gateway/devices/${process.env.TEXTBEE_DEVICE_ID}/sendSMS`,
+          {
+            method: 'POST',
+            headers: {
+              'x-api-key': process.env.TEXTBEE_API_KEY,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              recipients: [e164],
+              message: message,
+            }),
+          }
+        );
+        const data = await res.json();
+        console.log('📡 [Textbee Response]:', data);
+        return { provider: 'textbee', success: res.ok, details: data };
+      } catch (err: any) {
+        console.error('❌ [Textbee Delivery Error]:', err.message);
+        return { provider: 'textbee', success: false, details: err.message };
+      }
+    }
+
+    // 5. SmsHorizon (500 free trial credits for developers)
+    if (process.env.SMSHORIZON_USER && process.env.SMSHORIZON_API_KEY) {
+      try {
+        console.log(`\n📡 [Real Carrier Gateway] Dispatching via SmsHorizon to ${tenDigit}...`);
+        const url = `http://smshorizon.co.in/api/sendsms.php?user=${encodeURIComponent(
+          process.env.SMSHORIZON_USER
+        )}&apikey=${encodeURIComponent(process.env.SMSHORIZON_API_KEY)}&mobile=${tenDigit}&message=${encodeURIComponent(
+          message
+        )}&senderid=${encodeURIComponent(process.env.SMSHORIZON_SENDER_ID || 'HEMALK')}&type=txt`;
+        const res = await fetch(url);
+        const text = await res.text();
+        console.log('📡 [SmsHorizon Response]:', text);
+        return { provider: 'smshorizon', success: !text.toLowerCase().includes('error'), details: text };
+      } catch (err: any) {
+        console.error('❌ [SmsHorizon Delivery Error]:', err.message);
+        return { provider: 'smshorizon', success: false, details: err.message };
+      }
+    }
+
+    // 6. Authkey.io (Free developer credits)
+    if (process.env.AUTHKEY_API_KEY) {
+      try {
+        console.log(`\n📡 [Real Carrier Gateway] Dispatching via Authkey to ${tenDigit}...`);
+        const url = `https://api.authkey.io/request?authkey=${encodeURIComponent(
+          process.env.AUTHKEY_API_KEY
+        )}&mobile=${tenDigit}&country_code=91&sid=${encodeURIComponent(
+          process.env.AUTHKEY_SID || '1001'
+        )}&message=${encodeURIComponent(message)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        console.log('📡 [Authkey Response]:', data);
+        return { provider: 'authkey', success: res.ok, details: data };
+      } catch (err: any) {
+        console.error('❌ [Authkey Delivery Error]:', err.message);
+        return { provider: 'authkey', success: false, details: err.message };
+      }
+    }
+
+    // 7. Custom SMS Gateway Webhook
     if (process.env.SMS_GATEWAY_WEBHOOK_URL) {
       try {
         console.log(`\n📡 [Real Carrier Gateway] Dispatching via Webhook to ${phoneNumber}...`);
@@ -296,11 +386,11 @@ export class NotificationService {
       }
     }
 
-    console.log(`\nℹ️  [SMS Notice]: No FAST2SMS_API_KEY or TWILIO credentials in .env. Simulated local delivery logged.\n`);
+    console.log(`\nℹ️  [SMS Notice]: No external SMS API credentials in .env. Simulated local delivery logged.\n`);
     return {
       provider: 'simulated_local',
       success: true,
-      details: 'Local clinical simulation logged to system console & audit trail. (To send real SMS to +91 7985674878, set FAST2SMS_API_KEY or TWILIO credentials in .env)',
+      details: 'Local clinical simulation logged to system console & audit trail. Configure Twilio, Vonage, Textbee, SmsHorizon, or Authkey in .env for real delivery.',
     };
   }
 
