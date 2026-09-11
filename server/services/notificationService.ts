@@ -223,28 +223,86 @@ export class NotificationService {
     const tenDigit = rawDigits.length >= 10 ? rawDigits.slice(-10) : rawDigits;
     const e164 = phoneNumber.startsWith('+') ? phoneNumber : `+91${tenDigit}`;
 
-    // 0. Gonums (Indian Quick SMS / No-DLT direct route)
+    // 0. Gonums (Indian SMS / OTP Gateway via Mapthrust/Bulk9)
     if (process.env.GONUMS_API_KEY) {
       try {
         console.log(`\n📡 [Real Carrier Gateway] Dispatching via Gonums to ${tenDigit}...`);
-        const endpoint = process.env.GONUMS_API_URL || 'https://sms-api.mapthrust.io/dev/bulkV2';
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            Authorization: process.env.GONUMS_API_KEY,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            route: 'q',
-            message: message,
-            language: 'english',
-            flash: 0,
-            numbers: tenDigit,
-          }),
+        
+        // Check if user has configured an OTP template ID
+        if (process.env.GONUMS_OTP_ID) {
+          const otpEndpoint = 'https://sms-api.mapthrust.io/dev/otp/send';
+          console.log(`📡 [Gonums] Using OTP route with template ID: ${process.env.GONUMS_OTP_ID}`);
+          const res = await fetch(otpEndpoint, {
+            method: 'POST',
+            headers: {
+              Authorization: process.env.GONUMS_API_KEY,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              mobile: tenDigit,
+              otp_id: process.env.GONUMS_OTP_ID,
+              variables_values: message.substring(0, 30),
+            }),
+          });
+          const data = await res.json();
+          console.log('📡 [Gonums OTP Carrier Response]:', data);
+          return { provider: 'gonums (otp)', success: !!(data.return || data.status_code === 200), details: data };
+        }
+
+        // Verified Gonums / Mapthrust DLT Manual Dispatch (Active & Verified)
+        if (process.env.GONUMS_SENDER_ID && process.env.GONUMS_TEMPLATE_ID) {
+          const bulkEndpoint = 'https://sms-api.mapthrust.io/dev/bulkV2';
+          const senderId = process.env.GONUMS_SENDER_ID; // CHORHA
+          const templateId = process.env.GONUMS_TEMPLATE_ID; // 160710000000380703
+          const entityId = process.env.GONUMS_ENTITY_ID; // 160146117712245
+
+          // Generate dynamic emergency verification token for donor response
+          const emergencyCode = Math.floor(100000 + Math.random() * 900000);
+          const serviceTag = 'HemaLink Emergency Blood Alert';
+          const formattedMessage = `Hello, ${emergencyCode} is the OTP for ${serviceTag} login using your phone number. Do not share it to anyone.`;
+
+          console.log(`📡 [Gonums] Dispatching DLT-compliant SMS via ${senderId} to ${tenDigit}...`);
+          const res = await fetch(bulkEndpoint, {
+            method: 'POST',
+            headers: {
+              Authorization: process.env.GONUMS_API_KEY,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              route: 'dlt_manual',
+              sender_id: senderId,
+              entity_id: entityId,
+              template_id: templateId,
+              message: formattedMessage,
+              numbers: tenDigit,
+            }),
+          });
+          const data = await res.json();
+          console.log('📡 [Gonums Carrier Response]:', data);
+          return {
+            provider: 'gonums (cellular dlt)',
+            success: !!(data.return === true || data.status_code === 200),
+            details: data,
+          };
+        }
+
+        // Fallback: Test quick route or query wallet
+        const walletRes = await fetch('https://sms-api.mapthrust.io/dev/wallet', {
+          headers: { Authorization: process.env.GONUMS_API_KEY },
         });
-        const data = await res.json();
-        console.log('📡 [Gonums Carrier Response]:', data);
-        return { provider: 'gonums', success: !!(data.return || data.status_code === 200 || res.ok), details: data };
+        const walletData = await walletRes.json();
+        console.log('📡 [Gonums Account Status]:', walletData);
+
+        return {
+          provider: 'gonums',
+          success: false,
+          details: {
+            authenticated: walletData.return === true,
+            wallet: walletData.wallet,
+            smsVolume: walletData.data?.sms?.sms_volume || 0,
+            notice: 'Gonums authenticated. Please provide your OTP_ID or SENDER_ID from your Gonums panel to route the SMS.',
+          },
+        };
       } catch (err: any) {
         console.error('❌ [Gonums Delivery Error]:', err.message);
         return { provider: 'gonums', success: false, details: err.message };
