@@ -6,12 +6,35 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'hemalink.sqlite');
+const isVercel = Boolean(process.env.VERCEL);
+const defaultDbPath = isVercel
+  ? path.join('/tmp', 'bloodbridge.sqlite')
+  : path.join(__dirname, 'hemalink.sqlite');
+
+const DB_PATH = process.env.DB_PATH || defaultDbPath;
 
 let dbInstance: DatabaseSync | null = null;
 
 export function getDatabase(): DatabaseSync {
   if (!dbInstance) {
+    // If in Vercel serverless and /tmp DB does not exist, copy existing pre-seeded sqlite file if available
+    if (isVercel && !fs.existsSync(DB_PATH)) {
+      const candidates = [
+        path.join(__dirname, 'hemalink.sqlite'),
+        path.join(process.cwd(), 'server', 'db', 'hemalink.sqlite'),
+      ];
+      for (const src of candidates) {
+        if (fs.existsSync(src)) {
+          try {
+            fs.copyFileSync(src, DB_PATH);
+            break;
+          } catch (e) {
+            console.warn('[Vercel SQLite] Copy warning:', e);
+          }
+        }
+      }
+    }
+
     dbInstance = new DatabaseSync(DB_PATH);
     dbInstance.exec('PRAGMA foreign_keys = ON;');
     dbInstance.exec('PRAGMA journal_mode = WAL;');
@@ -21,9 +44,21 @@ export function getDatabase(): DatabaseSync {
 
 export function initDatabase(): void {
   const db = getDatabase();
-  const schemaPath = path.join(__dirname, 'schema.sql');
-  const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-  db.exec(schemaSql);
+  const schemaCandidates = [
+    path.join(__dirname, 'schema.sql'),
+    path.join(process.cwd(), 'server', 'db', 'schema.sql'),
+    path.join(process.cwd(), 'db', 'schema.sql'),
+  ];
+  let schemaSql = '';
+  for (const p of schemaCandidates) {
+    if (fs.existsSync(p)) {
+      schemaSql = fs.readFileSync(p, 'utf8');
+      break;
+    }
+  }
+  if (schemaSql) {
+    db.exec(schemaSql);
+  }
 }
 
 export function queryAll<T = any>(sql: string, params: any[] = []): T[] {
