@@ -53,7 +53,7 @@ async function startServer() {
   // 5. Start Listener
   app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`\n======================================================`);
-    console.log(`  HEMALINK: EMERGENCY BLOOD SHORTAGE PLATFORM`);
+    console.log(`  BLOODBRIDGE: EMERGENCY BLOOD SHORTAGE PLATFORM`);
     console.log(`  HealthTech Clinical Transfusion Operations System`);
     console.log(`======================================================`);
     console.log(`  Running on: http://localhost:${PORT}`);
@@ -65,6 +65,6 @@ async function startServer() {
 }
 
 startServer().catch((err) => {
-  console.error('Fatal error starting HemaLink server:', err);
+  console.error('Fatal error starting BloodBridge server:', err);
   process.exit(1);
 });

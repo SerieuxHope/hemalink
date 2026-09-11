@@ -56,7 +56,7 @@ export class NotificationService {
 
     if (channel === 'sms') {
       console.log(`\n======================================================`);
-      console.log(`📱 [HEMALINK SMS DISPATCH GATEWAY]`);
+      console.log(`📱 [BLOODBRIDGE SMS DISPATCH GATEWAY]`);
       console.log(`   To Recipient: ${payload.recipient_contact}`);
       console.log(`   Urgency: ${payload.urgency_level.toUpperCase()}`);
       console.log(`   Content: "${message}"`);
@@ -135,7 +135,7 @@ export class NotificationService {
     const notifId = 'notif_sms_' + Math.random().toString(36).substring(2, 10);
     const smsContent =
       message ||
-      `HEMALINK CRITICAL ALERT: O+ Blood needed urgently at City Central Blood Bank (Bay 104). Needed within 2h. Reply YES to confirm or visit http://localhost:3000 to reserve arrival slot. Zero patient info disclosed.`;
+      `BLOODBRIDGE CRITICAL ALERT: O+ Blood needed urgently at City Central Blood Bank (Bay 104). Needed within 2h. Reply YES to confirm or visit http://localhost:3000 to reserve arrival slot. Zero patient info disclosed.`;
 
     // Safely resolve valid targetShortageId
     let targetShortageId = shortageId || 'shortage_demo_o_plus';
@@ -176,7 +176,7 @@ export class NotificationService {
     }
 
     console.log(`\n======================================================`);
-    console.log(`📱 [HEMALINK DIRECT SMS ALERT SENT]`);
+    console.log(`📱 [BLOODBRIDGE DIRECT SMS ALERT SENT]`);
     console.log(`   Destination Phone: ${phoneNumber}`);
     console.log(`   Message: "${smsContent}"`);
     console.log(`   Donor ID: ${targetDonorId}`);
@@ -258,7 +258,7 @@ export class NotificationService {
 
           // Generate dynamic emergency verification token for donor response
           const emergencyCode = Math.floor(100000 + Math.random() * 900000);
-          const serviceTag = 'HemaLink Emergency Blood Alert';
+          const serviceTag = 'BloodBridge Emergency Blood Alert';
           const formattedMessage = `Hello, ${emergencyCode} is the OTP for ${serviceTag} login using your phone number. Do not share it to anyone.`;
 
           console.log(`📡 [Gonums] Dispatching DLT-compliant SMS via ${senderId} to ${tenDigit}...`);
@@ -376,7 +376,7 @@ export class NotificationService {
             api_key: process.env.VONAGE_API_KEY,
             api_secret: process.env.VONAGE_API_SECRET,
             to: rawDigits.startsWith('91') ? rawDigits : `91${tenDigit}`,
-            from: process.env.VONAGE_FROM || 'HemaLink',
+            from: process.env.VONAGE_FROM || 'BloodBridge',
             text: message,
           }),
         });
@@ -525,7 +525,7 @@ export class NotificationService {
       }
 
       const contact =
-        channel === 'sms' ? donor.phone || '555-0199' : donor.email || 'donor@hemalink.local';
+        channel === 'sms' ? donor.phone || '555-0199' : donor.email || 'donor@bloodbridge.local';
 
       try {
         await this.sendShortageAlert({

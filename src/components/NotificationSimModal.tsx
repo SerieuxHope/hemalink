@@ -230,7 +230,7 @@ export const NotificationSimModal: React.FC<NotificationSimModalProps> = ({
             }}
           >
             <div style={{ borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px', marginBottom: '10px' }}>
-              <div><strong>From:</strong> Transfusion Services &lt;dispatch@hemalink.local&gt;</div>
+              <div><strong>From:</strong> Transfusion Services &lt;dispatch@bloodbridge.local&gt;</div>
               <div><strong>Subject:</strong> {notification.title}</div>
             </div>
             <p style={{ lineHeight: 1.5, color: 'var(--color-text-primary)' }}>{notification.message}</p>

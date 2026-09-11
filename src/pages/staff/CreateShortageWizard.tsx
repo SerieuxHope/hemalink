@@ -424,7 +424,7 @@ export const CreateShortageWizard: React.FC<CreateShortageWizardProps> = ({
             </div>
 
             <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
-              Upon confirmation, HemaLink's matching engine will instantly evaluate 120+ active donors against ABO/Rh compatibility, distance, 56-day whole blood intervals, and recent notification fatigue.
+              Upon confirmation, BloodBridge's matching engine will instantly evaluate 120+ active donors against ABO/Rh compatibility, distance, 56-day whole blood intervals, and recent notification fatigue.
             </p>
           </div>
 

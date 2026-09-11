@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Droplet size={18} fill="#ffffff" />
         </div>
         <div>
-          <div className="brand-name">HemaLink</div>
+          <div className="brand-name">BloodBridge</div>
           <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: 500 }}>
             {currentRole === 'staff' ? 'Transfusion Ops' : currentRole === 'donor' ? 'Donor Portal' : 'Administrator'}
           </div>

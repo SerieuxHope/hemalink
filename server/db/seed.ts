@@ -1,4 +1,4 @@
-// HemaLink Comprehensive Database Seeding
+// BloodBridge Comprehensive Database Seeding
 // Generates realistic health facilities, 120+ diverse donors, inventory, and emergency scenarios
 
 import { initDatabase, execute, queryOne, transaction } from './database.js';
@@ -13,7 +13,7 @@ export function seedDatabase(): void {
     return;
   }
 
-  console.log('Seeding HemaLink database with clinical facilities, 120+ donors, and inventory...');
+  console.log('Seeding BloodBridge database with clinical facilities, 120+ donors, and inventory...');
 
   transaction(() => {
     // 1. Seed System Configuration
@@ -80,7 +80,7 @@ export function seedDatabase(): void {
         id: 'usr_staff_sarah',
         role: 'staff',
         name: 'Dr. Sarah Chen',
-        email: 'staff@hemalink.local',
+        email: 'staff@bloodbridge.local',
         phone: '+1 (555) 901-4411',
         blood_bank_id: 'bb_city_central',
       },
@@ -109,7 +109,7 @@ export function seedDatabase(): void {
         id: 'usr_admin',
         role: 'admin',
         name: 'System Administrator',
-        email: 'admin@hemalink.local',
+        email: 'admin@bloodbridge.local',
         phone: '+1 (555) 100-0000',
       },
     ];
@@ -253,7 +253,7 @@ export function seedDatabase(): void {
       execute(
         `INSERT INTO users (id, role, name, email, phone, status)
          VALUES (?, 'donor', ?, ?, ?, 'active')`,
-        [userId, fullName, `donor${i}@hemalink.local`, `+1 (555) ${100 + (i % 899)}-${1000 + i}`]
+        [userId, fullName, `donor${i}@bloodbridge.local`, `+1 (555) ${100 + (i % 899)}-${1000 + i}`]
       );
 
       execute(

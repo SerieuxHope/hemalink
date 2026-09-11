@@ -97,7 +97,7 @@ export const DonorPreferencesPage: React.FC = () => {
         </div>
 
         <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '16px' }}>
-          HemaLink actively tracks notification exposure. To protect donors from exhaustion, donors with lower recent request exposure are prioritized for new shortage appeals.
+          BloodBridge actively tracks notification exposure. To protect donors from exhaustion, donors with lower recent request exposure are prioritized for new shortage appeals.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', fontSize: '13px' }}>

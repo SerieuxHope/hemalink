@@ -1,4 +1,4 @@
-// HemaLink Core Frontend TypeScript Definitions
+// BloodBridge Core Frontend TypeScript Definitions
 
 export type BloodGroup = 'O+' | 'O-' | 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-';
 export type BloodComponent = 'whole_blood' | 'red_cells' | 'platelets' | 'plasma' | 'cryoprecipitate';

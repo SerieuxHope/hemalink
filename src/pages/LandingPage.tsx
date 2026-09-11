@@ -51,7 +51,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
           <div>
             <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-primary)', letterSpacing: '-0.02em' }}>
-              HemaLink
+              BloodBridge
             </div>
             <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
               Transfusion Operations & Targeted Donor Mobilization
@@ -126,7 +126,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             lineHeight: 1.6,
           }}
         >
-          HemaLink enables blood banks and hospital transfusion teams to rapidly identify, prioritize, and coordinate nearby eligible donors during critical stock deficits—eliminating broadcast spam and protecting patient privacy.
+          BloodBridge enables blood banks and hospital transfusion teams to rapidly identify, prioritize, and coordinate nearby eligible donors during critical stock deficits—eliminating broadcast spam and protecting patient privacy.
         </p>
 
         {/* Demo Scenario Callout Card */}
@@ -154,7 +154,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             Emergency Trauma: 12 Units O+ Whole Blood Required
           </h3>
           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '16px', lineHeight: 1.5 }}>
-            City Central Blood Bank has experienced sudden critical depletion (only 3 units in reserve). Net shortage: <strong>9 units needed within 2.5 hours</strong>. HemaLink evaluates 123 registered donors across proximity, 56-day intervals, availability, and fatigue throttling.
+            City Central Blood Bank has experienced sudden critical depletion (only 3 units in reserve). Net shortage: <strong>9 units needed within 2.5 hours</strong>. BloodBridge evaluates 123 registered donors across proximity, 56-day intervals, availability, and fatigue throttling.
           </p>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <button
@@ -333,7 +333,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         }}
       >
         <div style={{ maxWidth: '800px', margin: '0 auto', lineHeight: 1.6 }}>
-          <strong>HemaLink Transfusion Operations System</strong> • Production Architecture Demo<br />
+          <strong>BloodBridge Transfusion Operations System</strong> • Production Architecture Demo<br />
           Compliance-Ready Healthcare Information Architecture (HIPAA / DPDP / Minimum Data Collection). Final medical eligibility confirmed on-site by certified blood bank professionals.
         </div>
       </footer>

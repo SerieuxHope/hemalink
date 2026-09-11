@@ -140,7 +140,7 @@ export const StaffAnalyticsPage: React.FC = () => {
                   <tr>
                     <th>Operational Metric</th>
                     <th>Traditional Broadcast (WhatsApp/Social Media)</th>
-                    <th>HemaLink Targeted Matching</th>
+                    <th>BloodBridge Targeted Matching</th>
                     <th>Net Operational Impact</th>
                   </tr>
                 </thead>

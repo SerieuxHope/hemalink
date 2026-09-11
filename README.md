@@ -1,4 +1,4 @@
-# HemaLink — Emergency Blood Shortage & Donor Matching Platform
+# BloodBridge — Emergency Blood Shortage & Donor Matching Platform
 
 > **Clinical Emergency Transfusion Operations & Targeted Donor Matching System**  
 > Built for hospitals, blood banks, and verified voluntary blood donors.
@@ -9,7 +9,7 @@
 
 During acute clinical emergencies (severe trauma, postpartum hemorrhage, major surgical complications), blood banks experience rapid, critical inventory depletion. Conventional donor recruitment relies on manual call lists, broadcast messaging, and ad-hoc social groups—leading to donor fatigue, poor match rates, and delayed transfusions.
 
-**HemaLink** replaces emergency broadcasts with an explainable, deterministic 6-factor donor matching engine, receiving capacity throttling (4 donors/hour per facility), and automated zero-PII emergency notifications via In-App alerts and cellular SMS.
+**BloodBridge** replaces emergency broadcasts with an explainable, deterministic 6-factor donor matching engine, receiving capacity throttling (4 donors/hour per facility), and automated zero-PII emergency notifications via In-App alerts and cellular SMS.
 
 ---
 
@@ -89,7 +89,7 @@ TWILIO_ACCOUNT_SID=your_account_sid
 TWILIO_AUTH_TOKEN=your_auth_token
 TWILIO_PHONE_NUMBER=your_twilio_number
 ```
-*(If no API keys are provided, HemaLink automatically operates in full simulated local delivery mode with complete audit logging).*
+*(If no API keys are provided, BloodBridge automatically operates in full simulated local delivery mode with complete audit logging).*
 
 ### 4. Run Development Server
 ```bash
