@@ -50,7 +50,7 @@ export const DemoBanner: React.FC<DemoBannerProps> = ({
 
         {onTriggerDirectSMS && (
           <button
-            onClick={() => onTriggerDirectSMS('7985674878')}
+            onClick={() => onTriggerDirectSMS('7600887262')}
             className="btn btn-sm"
             style={{
               backgroundColor: '#0F766E',
@@ -61,9 +61,9 @@ export const DemoBanner: React.FC<DemoBannerProps> = ({
               padding: '2px 10px',
               fontWeight: 600,
             }}
-            title="Dispatch emergency SMS alert to 7985674878"
+            title="Dispatch emergency SMS alert to 7600887262"
           >
-            📱 Send SMS Alert to 7985674878
+            📱 Send SMS Alert to 7600887262
           </button>
         )}
       </div>

@@ -39,7 +39,7 @@ export const NotificationSimModal: React.FC<NotificationSimModalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          phone: '7985674878',
+          phone: '7600887262',
           message: notification?.message,
         }),
       }).then((r) => r.json());
@@ -156,7 +156,7 @@ export const NotificationSimModal: React.FC<NotificationSimModalProps> = ({
             >
               <div>
                 <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-primary)' }}>
-                  Configured Recipient: <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-secondary)' }}>7985674878</span>
+                  Configured Recipient: <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-secondary)' }}>7600887262</span>
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>
                   Dispatches emergency alert payload directly to SMS gateway
@@ -192,7 +192,7 @@ export const NotificationSimModal: React.FC<NotificationSimModalProps> = ({
                   fontWeight: 500,
                 }}
               >
-                ✓ Live SMS successfully dispatched to 7985674878 & recorded in audit log.
+                ✓ Live SMS successfully dispatched to 7600887262 & recorded in audit log.
               </div>
             )}
           </div>
