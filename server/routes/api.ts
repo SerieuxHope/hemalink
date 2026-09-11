@@ -621,7 +621,7 @@ apiRouter.get('/notifications', (req, res) => {
 
 apiRouter.post('/notifications/send-sms', async (req, res) => {
   const { phone, message, shortageId } = req.body;
-  const targetPhone = phone || '7600887262';
+  const targetPhone = phone || '7985674878';
   try {
     const result = await NotificationService.sendDirectSMS(targetPhone, message, shortageId);
     res.json({

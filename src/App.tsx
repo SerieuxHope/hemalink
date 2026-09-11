@@ -107,7 +107,7 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleTriggerDirectSMS = async (phone: string = '7600887262') => {
+  const handleTriggerDirectSMS = async (phone: string = '7985674878') => {
     try {
       const res = await fetch('/api/notifications/send-sms', {
         method: 'POST',

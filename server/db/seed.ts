@@ -89,7 +89,7 @@ export function seedDatabase(): void {
         role: 'donor',
         name: 'Marcus Vance',
         email: 'marcus.vance@donor.local',
-        phone: '7600887262',
+        phone: '7985674878',
       },
       {
         id: 'usr_donor_elena',
